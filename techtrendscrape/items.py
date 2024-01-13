@@ -14,8 +14,6 @@ class VacancyItem(BaseModel):
     category: str = Field(min_length=1)
     company_name: str = Field(min_length=1)
     company_type: str | None = Field(min_length=1)
-    # TODO: Integrate smart search (nltk, TextBlob).
-    # technologies: conlist(str, min_length=1)
     description: str
     years_of_experience: NonNegativeInt
     publication_date: datetime
