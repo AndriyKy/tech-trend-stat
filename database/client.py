@@ -17,9 +17,9 @@ class MongoClientSingleton:
     def __new__(
         cls,
         *,
+        cluster_host: str | None,
         database: str,
-        is_test: bool = True,
-        cluster_host: str | None = None,
+        is_test: bool,
         **kwargs: Any,
     ) -> Self:
         if not cls._instance:
