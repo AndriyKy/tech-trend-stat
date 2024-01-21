@@ -1,2 +1,2 @@
 from .client import MongoClientSingleton
-from .template import Database
+from .templates import Database
