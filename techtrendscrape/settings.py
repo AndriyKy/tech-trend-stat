@@ -10,7 +10,12 @@
 import os
 from datetime import timedelta
 
-IS_TEST = True
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+IS_TEST = os.environ["IS_TEST"]
 
 MONGODB_HOST = os.getenv("MONGODB_HOST")
 MONGODB_PORT = os.getenv("MONGODB_PORT")
