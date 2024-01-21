@@ -10,10 +10,6 @@
 import os
 from datetime import timedelta
 
-import dotenv
-
-dotenv.load_dotenv()
-
 IS_TEST = True
 
 MONGODB_HOST = os.getenv("MONGODB_HOST")
