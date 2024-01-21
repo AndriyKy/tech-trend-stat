@@ -7,23 +7,11 @@
 # useful for handling different item types with a single interface
 from typing import Self
 
-from pymongo import ASCENDING, DESCENDING
 from scrapy.crawler import Crawler
 
-from database import Database, MongoClientSingleton
+from database import DatabaseVacancies, MongoClientSingleton
 from techtrendscrape.items import VacancyItem
 from techtrendscrape.spiders.djinni import DjinniSpider
-
-
-class DatabaseVacancies(Database):
-    database = "vacancy_statistics"
-    collection = "vacancies"
-    indices = [
-        ("publication_date", DESCENDING),
-        ("company_name", ASCENDING),
-        ("years_of_experience", ASCENDING),
-    ]
-    items = []
 
 
 class MongoPipeline(DatabaseVacancies):

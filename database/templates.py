@@ -1,13 +1,13 @@
 from typing import Any
 
-from pymongo import ReplaceOne
+from pymongo import ASCENDING, DESCENDING, ReplaceOne
 
 
 class Database:
     collection: str
     database: str
-    indices: list[tuple[str, int]]
-    items: list[dict[str, Any]]
+    indices: list[tuple[str, int]] = []
+    items: list[dict[str, Any]] = []
     cluster_host: str | None = None
 
     def create_replacements(self) -> list[ReplaceOne]:
@@ -18,3 +18,13 @@ class Database:
             indices = {index: vacancy[index] for index in index_fields}
             replacements.append(ReplaceOne(indices, vacancy, upsert=True))
         return replacements
+
+
+class DatabaseVacancies(Database):
+    database = "vacancy_statistics"
+    collection = "vacancies"
+    indices = [
+        ("publication_date", DESCENDING),
+        ("company_name", ASCENDING),
+        ("years_of_experience", ASCENDING),
+    ]
