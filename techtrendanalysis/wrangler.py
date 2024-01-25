@@ -1,37 +1,60 @@
-import string
-from pathlib import Path
+import re
+from collections import Counter
+from json import loads
+from os.path import join as join_path
 
-import nltk
-from nltk.corpus import stopwords
-from nltk.probability import FreqDist
-from nltk.tokenize import word_tokenize
+import spacy
 
-CACHE_DIR = ".cache"
+STOPWORDS_DIR = join_path("techtrendanalysis", "stopwords")
 
 
-class Wrangle:
-    def __init__(self) -> None:
-        # Set the NLTK data directory to your custom directory.
-        nltk.data.path.append(CACHE_DIR)
+class Wrangler:
+    def __init__(self, text: str, extra_filters: set[str] = set()) -> None:
+        self._text = text
+        self._extra_filters = extra_filters
+        with open(
+            join_path(STOPWORDS_DIR, "ukrainian-stopwords.json")
+        ) as ukr_stopwords, open(
+            join_path(STOPWORDS_DIR, "common-words.json")
+        ) as common_words:
+            self.stopwords = set(
+                loads(ukr_stopwords.read()) + loads(common_words.read())
+            )
 
-        if not Path(CACHE_DIR).exists():
-            # Download stop words and tokenizer.
-            nltk.download("stopwords", CACHE_DIR)
-            nltk.download("punkt", CACHE_DIR)
+    def _clean_text(self) -> str:
+        to_filter = {"<br>", "<b>", "</b>", "• ", "- "}.union(
+            self._extra_filters
+        )
+        pattern = re.compile(rf"{'|'.join(to_filter)}", flags=re.IGNORECASE)
+        return re.sub(pattern, " ", self._text)
 
-    @staticmethod
     def calculate_frequency_distribution(
-        text, limit_results: int = 20
-    ) -> list[tuple[str, int]]:
-        """Remove stop words and words that are not capitalized."""
-        stop_words = set(stopwords.words("english"))
-        words = word_tokenize(text)
+        self, limit_results: int = 20
+    ) -> dict[str, int]:
+        self._text = self._clean_text()
 
-        filtered_words = [
-            word
-            for word in words
-            if word.lower() not in stop_words
-            and word not in string.punctuation
-        ]
+        nlp = spacy.load("en_core_web_sm")  # Load the spaCy model.
+        doc = nlp(self._text)  # Process the text with spaCy.
 
-        return FreqDist(filtered_words).most_common(limit_results)
+        # Unicode ranges for English letters.
+        eng_uppercase, eng_lowercase = range(65, 90), range(97, 122)
+
+        proper_nouns, lower_to_upper = [], {}
+        for token in doc:
+            if (
+                token.pos_ == "PROPN"  # IT techs are mostly proper nouns.
+                and (token_text := token.text) not in self.stopwords
+                and (
+                    ord(token_text[0]) in eng_uppercase
+                    or ord(token_text[0]) in eng_lowercase
+                )
+            ):
+                proper_nouns.append(token_text.lower())
+                lower_to_upper[token_text.lower()] = token_text
+
+        proper_nouns_count = Counter(proper_nouns)
+
+        return {
+            lower_to_upper[noun_frequency[0]]: noun_frequency[1]
+            for noun_frequency in proper_nouns_count.most_common(limit_results)
+        }
