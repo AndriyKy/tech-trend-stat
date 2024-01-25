@@ -7,20 +7,7 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-import os
 from datetime import timedelta
-
-from dotenv import load_dotenv
-
-load_dotenv()
-
-
-IS_TEST = os.environ["IS_TEST"]
-
-MONGODB_HOST = os.getenv("MONGODB_HOST")
-MONGODB_PORT = os.getenv("MONGODB_PORT")
-MONGODB_USERNAME = os.getenv("MONGODB_USERNAME")
-MONGODB_PASSWORD = os.getenv("MONGODB_PASSWORD")
 
 BOT_NAME = "techtrendscrape"
 
