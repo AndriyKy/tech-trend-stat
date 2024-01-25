@@ -4,7 +4,7 @@ from typing import Any, Generator, Iterable
 import scrapy
 from scrapy.http import Request, Response
 
-from techtrendscrape.items import VacancyItem
+from database import VacancyItem
 
 
 class DjinniSpider(scrapy.Spider):
