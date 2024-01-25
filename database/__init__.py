@@ -1,2 +1,3 @@
 from .client import MongoClientSingleton
-from .templates import DatabaseVacancies
+from .models import Statistics, VacancyItem
+from .templates import DatabaseStatistics, DatabaseVacancies
