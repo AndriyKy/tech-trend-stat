@@ -1,8 +1,3 @@
-# Define here the models for your scraped items
-#
-# See documentation in:
-# https://docs.scrapy.org/en/latest/topics/items.html
-
 from datetime import datetime
 from typing import Literal
 
@@ -19,3 +14,9 @@ class VacancyItem(BaseModel):
     publication_date: datetime
     views: NonNegativeInt | None
     applications: NonNegativeInt | None
+
+
+class Statistics(BaseModel):
+    from_datetime: datetime
+    to_datetime: datetime
+    technology_frequency: dict[str, int]

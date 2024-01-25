@@ -1,8 +1,11 @@
 from typing import Any, Self
 from urllib.parse import quote
 
+from dotenv import load_dotenv
 from pymongo import MongoClient
 from pymongo.collection import Collection
+
+load_dotenv()
 
 
 class MongoClientSingleton:
