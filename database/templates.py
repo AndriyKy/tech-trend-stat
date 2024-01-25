@@ -22,8 +22,8 @@ class Database:
             is_test=True if environ["IS_TEST"].lower() == "true" else False,
             host=getenv("MONGODB_HOST"),
             port=int(getenv("MONGODB_PORT", 27017)),
-            # username=getenv("MONGODB_USERNAME"),
-            # password=getenv("MONGODB_PASSWORD"),
+            username=getenv("MONGODB_USERNAME"),
+            password=getenv("MONGODB_PASSWORD"),
         )
         self.client[self.collection].create_index(self.indices, unique=True)
 
