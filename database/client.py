@@ -35,7 +35,7 @@ class MongoClientSingleton(MongoClient):
             client_kwargs = kwargs
         super().__init__(**client_kwargs)
 
-    def __new__(cls, **kwargs) -> "MongoClientSingleton":
+    def __new__(cls, **kwargs: Any) -> "MongoClientSingleton":
         """
         Create a new instance if it doesn't exist,
         otherwise return the existing one.
@@ -46,7 +46,7 @@ class MongoClientSingleton(MongoClient):
         return cls._instance
 
     @staticmethod
-    def _validate_production_params(**kwargs: dict[str, Any]) -> None:
+    def _validate_production_params(**kwargs: Any) -> None:
         """Validate required parameters for the production environment."""
         if (
             "username" not in kwargs
