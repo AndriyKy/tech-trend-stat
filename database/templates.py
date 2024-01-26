@@ -49,6 +49,7 @@ class DatabaseVacancies(Database):
 
     def fetch_vacancies(
         self,
+        category: str,
         from_datetime: timedelta,
         to_datetime: timedelta,
     ) -> list[dict[str, Any]]:
@@ -58,6 +59,7 @@ class DatabaseVacancies(Database):
                 {
                     "$match": {
                         "$and": [
+                            {"category": category},
                             {"publication_date": {"$lte": now - to_datetime}},
                             {
                                 "publication_date": {

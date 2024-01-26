@@ -17,12 +17,22 @@ STOPWORDS_DIR = join_path("techtrendanalysis", "stopwords")
 
 class Wrangler(DatabaseVacancies):
     def __init__(
-        self, text: str | None, extra_filters: set[str] = set()
+        self,
+        text: str | None,
+        category: str | None,
+        extra_filters: set[str] = set(),
     ) -> None:
         self._text = text
+        self._category = category
         self._extra_filters = extra_filters
         self._from_datetime: timedelta = timedelta(days=0)
         self._to_datetime: timedelta = timedelta(days=0)
+
+        if (not self._text and not self._category) or (
+            self._text and self._category
+        ):
+            raise ValueError("Either `text` or `category` is required!")
+
         with open(
             join_path(STOPWORDS_DIR, "ukrainian-stopwords.json")
         ) as ukr_stopwords, open(
@@ -47,7 +57,9 @@ class Wrangler(DatabaseVacancies):
         self._from_datetime = from_datetime
         self._to_datetime = to_datetime
         self.connect_database()
-        vacancies = self.fetch_vacancies(from_datetime, to_datetime)
+        vacancies = self.fetch_vacancies(
+            self._category, from_datetime, to_datetime
+        )
         self._text = " ".join(
             [vacancy["description"] for vacancy in vacancies]
         )
