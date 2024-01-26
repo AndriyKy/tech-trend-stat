@@ -16,7 +16,7 @@ class MongoPipeline(DatabaseVacancies):
         self.items: list[VacancyItem] = []
 
     def close_spider(self, spider: DjinniSpider) -> None:
-        collection = self.connect_database()
+        collection = self.connect_collection()
         collection.bulk_write(self.create_replacements(self.items))
         self.client.close()
 

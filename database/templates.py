@@ -15,7 +15,7 @@ class Database:
     indices: list[tuple[str, int]]
     client: MongoClientSingleton | None = None
 
-    def connect_database(self) -> Collection:
+    def connect_collection(self) -> Collection:
         self.client = MongoClientSingleton(
             is_test=True if environ["IS_TEST"].lower() == "true" else False,
             cluster_host=getenv("MONGODB_CLUSTER_HOST"),

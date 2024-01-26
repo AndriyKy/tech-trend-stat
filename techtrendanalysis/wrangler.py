@@ -51,7 +51,7 @@ class Wrangler(DatabaseVacancies):
     ) -> None:
         self._from_datetime = from_datetime
         self._to_datetime = to_datetime
-        self.connect_database()
+        self.connect_collection()
         vacancies = self.fetch_vacancies(
             self._category, from_datetime, to_datetime
         )
@@ -106,7 +106,7 @@ class Wrangler(DatabaseVacancies):
     ) -> BulkWriteResult | Any:
         if to_db:
             db = DatabaseStatistics()
-            collection = db.connect_database()
+            collection = db.connect_collection()
             bulk_write_result = collection.bulk_write(
                 db.create_replacements([statistics])
             )
