@@ -31,3 +31,8 @@ class CrawlTrends:
             description = " ".join([item["description"] for item in reader])
         wrangler = Wrangler(description, self._category)
         return wrangler.calculate_frequency_distribution()
+
+
+if __name__ == "__main__":
+    crawler = CrawlTrends()
+    crawler.start()
