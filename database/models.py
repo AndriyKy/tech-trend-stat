@@ -17,6 +17,7 @@ class VacancyItem(BaseModel):
 
 
 class Statistics(BaseModel):
+    category: str = Field(min_length=1)
     from_datetime: datetime
     to_datetime: datetime
     technology_frequency: dict[str, int]

@@ -19,7 +19,7 @@ class Wrangler(DatabaseVacancies):
     def __init__(
         self,
         text: str | None,
-        category: str | None,
+        category: str,
         extra_filters: set[str] = set(),
     ) -> None:
         self._text = text
@@ -27,11 +27,6 @@ class Wrangler(DatabaseVacancies):
         self._extra_filters = extra_filters
         self._from_datetime: timedelta = timedelta(days=0)
         self._to_datetime: timedelta = timedelta(days=0)
-
-        if (not self._text and not self._category) or (
-            self._text and self._category
-        ):
-            raise ValueError("Either `text` or `category` is required!")
 
         with open(
             join_path(STOPWORDS_DIR, "ukrainian-stopwords.json")
@@ -94,6 +89,7 @@ class Wrangler(DatabaseVacancies):
         proper_nouns_count = Counter(proper_nouns)
         now = datetime.now(UTC)
         return Statistics(
+            category=self._category,
             from_datetime=now - self._from_datetime,
             to_datetime=now - self._to_datetime,
             technology_frequency={
