@@ -50,6 +50,8 @@ class MongoClientSingleton:
     def __getitem__(self, collection_name: str) -> Collection:
         return self._client[self._database][collection_name]
 
+    @classmethod
     @property
-    def close(self) -> None:
-        self._client.close()
+    def close(cls) -> None:
+        cls._client.close()
+        cls._instance = None

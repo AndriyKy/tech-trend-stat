@@ -54,7 +54,7 @@ class DatabaseVacancies(Database):
         to_datetime: timedelta,
     ) -> list[dict[str, Any]]:
         now = datetime.now(UTC)
-        vacancies = self.client[self.collection].aggregate(
+        with self.client[self.collection].aggregate(
             [
                 {
                     "$match": {
@@ -70,11 +70,11 @@ class DatabaseVacancies(Database):
                     }
                 }
             ],
-        )
-        return [vacancy for vacancy in vacancies]
+        ) as vacancies:
+            return [vacancy for vacancy in vacancies]
 
 
 class DatabaseStatistics(Database):
     database = "vacancy_statistics"
     collection = "statistics"
-    indices = [("technology_frequency", ASCENDING)]
+    indices = [("category", ASCENDING), ("technology_frequency", ASCENDING)]
