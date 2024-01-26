@@ -51,14 +51,14 @@ class Wrangler(DatabaseVacancies):
     ) -> None:
         self._from_datetime = from_datetime
         self._to_datetime = to_datetime
-        self.connect_database()
+        self.connect_collection()
         vacancies = self.fetch_vacancies(
             self._category, from_datetime, to_datetime
         )
         self._text = " ".join(
             [vacancy["description"] for vacancy in vacancies]
         )
-        self.client.close
+        self.client.close()
 
     def calculate_frequency_distribution(
         self, limit_results: int = 20
@@ -105,12 +105,12 @@ class Wrangler(DatabaseVacancies):
         statistics: Statistics, *, to_db: bool = True
     ) -> BulkWriteResult | Any:
         if to_db:
-            database = DatabaseStatistics()
-            database.connect_database()
-            bulk_write_result = database.client[
-                database.collection
-            ].bulk_write(database.create_replacements([statistics]))
-            database.client.close
+            db = DatabaseStatistics()
+            collection = db.connect_collection()
+            bulk_write_result = collection.bulk_write(
+                db.create_replacements([statistics])
+            )
+            db.client.close()
             return bulk_write_result
 
         file = Path(f"{DatabaseStatistics.collection}.csv")

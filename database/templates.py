@@ -4,6 +4,7 @@ from typing import Any
 
 from pydantic import BaseModel
 from pymongo import ASCENDING, DESCENDING, ReplaceOne
+from pymongo.collection import Collection
 
 from database.client import MongoClientSingleton
 
@@ -12,20 +13,20 @@ class Database:
     collection: str
     database: str
     indices: list[tuple[str, int]]
-    cluster_host: str | None = None
     client: MongoClientSingleton | None = None
 
-    def connect_database(self) -> None:
+    def connect_collection(self) -> Collection:
         self.client = MongoClientSingleton(
-            cluster_host=self.cluster_host,
-            database=self.database,
             is_test=True if environ["IS_TEST"].lower() == "true" else False,
+            cluster_host=getenv("MONGODB_CLUSTER_HOST"),
             host=getenv("MONGODB_HOST"),
             port=int(getenv("MONGODB_PORT", 27017)),
             username=getenv("MONGODB_USERNAME"),
             password=getenv("MONGODB_PASSWORD"),
         )
-        self.client[self.collection].create_index(self.indices, unique=True)
+        collection = self.client[self.database][self.collection]
+        collection.create_index(self.indices, unique=True)
+        return collection
 
     def create_replacements(self, items: list[BaseModel]) -> list[ReplaceOne]:
         """Request replacements for `bulk_write` operation."""
@@ -54,7 +55,7 @@ class DatabaseVacancies(Database):
         to_datetime: timedelta,
     ) -> list[dict[str, Any]]:
         now = datetime.now(UTC)
-        with self.client[self.collection].aggregate(
+        with self.client[self.database][self.collection].aggregate(
             [
                 {
                     "$match": {
