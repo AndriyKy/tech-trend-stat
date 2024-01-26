@@ -11,11 +11,11 @@ class DjinniSpider(scrapy.Spider):
     name = "djinni"
     allowed_domains = ["djinni.co"]
     start_urls = ["https://djinni.co/jobs/"]
-    categories = ["Python"]
+    categories = "Python"
 
     def start_requests(self) -> Iterable[Request]:
         for url in self.start_urls:
-            for primary_keyword in self.categories:
+            for primary_keyword in self.categories.split():
                 yield Request(
                     f"{url}?primary_keyword={primary_keyword}",
                     dont_filter=True,

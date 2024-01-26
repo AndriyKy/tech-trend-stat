@@ -6,6 +6,9 @@
 
 # useful for handling different item types with a single interface
 
+import csv
+from pathlib import Path
+
 from database import DatabaseVacancies, VacancyItem
 from techtrendscrape.spiders.djinni import DjinniSpider
 
@@ -25,3 +28,14 @@ class MongoPipeline(DatabaseVacancies):
     ) -> VacancyItem:
         self.items.append(item)
         return item
+
+
+class CSVPipeline(MongoPipeline):
+    def close_spider(self, spider: DjinniSpider) -> None:
+        fieldnames = VacancyItem.model_fields.keys()
+        with open(f"{self.collection}.csv", "w") as fp:
+            writer = csv.DictWriter(fp, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(
+                [item.model_dump(mode="json") for item in self.items]
+            )
