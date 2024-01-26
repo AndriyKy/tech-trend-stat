@@ -55,7 +55,7 @@ class DatabaseVacancies(Database):
         to_datetime: timedelta,
     ) -> list[dict[str, Any]]:
         now = datetime.now(UTC)
-        with self.client[self.database][self.client].aggregate(
+        with self.client[self.database][self.collection].aggregate(
             [
                 {
                     "$match": {
