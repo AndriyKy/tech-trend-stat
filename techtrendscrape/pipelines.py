@@ -7,7 +7,6 @@
 # useful for handling different item types with a single interface
 
 import csv
-from pathlib import Path
 
 from database import DatabaseVacancies, VacancyItem
 from techtrendscrape.spiders.djinni import DjinniSpider
