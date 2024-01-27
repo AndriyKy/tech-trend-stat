@@ -14,7 +14,7 @@ class CrawlToCSV:
     statistics. It is intended for overview use.
     """
 
-    def __init__(self, category: str = "Python") -> None:
+    def __init__(self, category: str) -> None:
         self._category = category
         self._settings = get_project_settings()
         # Save the results to a CSV file instead of MongoDB.
@@ -52,6 +52,7 @@ class CrawlToCSV:
 
 
 if __name__ == "__main__":
-    crawler = CrawlToCSV()
+    CATEGORY = "Python"
+    crawler = CrawlToCSV(CATEGORY)
     crawler.start()
     crawler.extract_statistics()
