@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Any, Generator, Iterable
+from urllib.parse import quote_plus
 
 import scrapy
 from scrapy.http import Request, Response
@@ -8,6 +9,11 @@ from database import VacancyItem
 
 
 class DjinniSpider(scrapy.Spider):
+    """Pass any number of categories as a string separated by a `" | "`.
+    For example `"C# / .NET | Python"`. The category name can be
+    found on the Djinni website.
+    """
+
     name = "djinni"
     allowed_domains = ["djinni.co"]
     start_urls = ["https://djinni.co/jobs/"]
@@ -15,9 +21,9 @@ class DjinniSpider(scrapy.Spider):
 
     def start_requests(self) -> Iterable[Request]:
         for url in self.start_urls:
-            for primary_keyword in self.categories.split():
+            for primary_keyword in self.categories.split(" | "):
                 yield Request(
-                    f"{url}?primary_keyword={primary_keyword}",
+                    f"{url}?primary_keyword={quote_plus(primary_keyword)}",
                     dont_filter=True,
                 )
 
