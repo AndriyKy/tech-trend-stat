@@ -125,3 +125,10 @@ class Wrangler(DatabaseVacancies):
             writer = csv.DictWriter(fp, fieldnames=fieldnames)
             writer.writeheader() if not file_exists else None
             return writer.writerow(statistics.model_dump())
+
+
+if __name__ == "__main__":
+    CATEGORY = "Python"
+    wrangler = Wrangler(None, CATEGORY)
+    statistics = wrangler.calculate_frequency_distribution()
+    wrangler.save_statistics(statistics)
