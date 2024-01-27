@@ -1,5 +1,5 @@
 # TechTrendStat
-**Technological Trends Statistician** is your go-to tool for real-time insights into the ever-changing technology landscape, combining web scraping and data analysis to track and analyze the latest trends in development job descriptions.
+**Technology Trends Statistician** is your go-to tool for real-time insights into the ever-changing technology landscape, combining web scraping and data analysis to track and analyze the latest trends in development job descriptions.
 
 ## Features
 - [Scraping jobs from Djinni](techtrendscrape/spiders/djinni.py) by several specialization categories (e.g. Python, Java, DevOps, etc.).
@@ -9,7 +9,7 @@
 - [Database templates](database/templates.py) to simplify connection to MongoDB.
 - [Two pipelines](techtrendscrape/pipelines.py) (Mongo and CSV).
 - [CSV pipeline](techtrendscrape/crawler.py) that covers the entire ETL process.
-- [Data Wrangling](techtrendanalysis/wrangler.py). Clean up text and extract technical statistics.
+- [Data Wrangling](techtrendanalysis/wrangler.py). Clean up text and extract technology statistics.
 
 ## Linux Installation
 > **NOTE:** Python version >3.8 is required.
@@ -36,7 +36,7 @@ If you decide to work with MongoDB, here is a [tutorial](https://sparkbyexamples
 
 Here is also the [instruction](https://www.mongodb.com/docs/atlas/create-connect-deployments/) on how to create a cluster on the cloud.
 
-Once the database has been successfully installed, you just need to run the following command to scrape the vacancies using the `scrapy` spider:
+Once the database has been successfully installed, you just need to run the following command to scrape the vacancies using the `scrapy` spider along with the Mongo pipeline:
 ```bash
 scrapy crawl djinni -a categories="Python"
 ```
