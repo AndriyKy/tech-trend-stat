@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Any, Generator, Iterable
-from urllib.parse import quote_plus
+from urllib.parse import quote_plus, unquote_plus
 
 import scrapy
 from scrapy.http import Request, Response
@@ -59,7 +59,9 @@ class DjinniSpider(scrapy.Spider):
         )
 
     def parse(self, response: Response) -> Generator[VacancyItem, Any, None]:
-        category = response.request.url.split("=")[1].split("&")[0]
+        category = unquote_plus(
+            response.request.url.split("=")[1].split("&")[0]
+        )
         for job_item in response.css("ul .list-jobs__item"):
             yield self._parse_job_item(job_item, category)
         if next_page := response.css(".pagination li.active + li a"):
