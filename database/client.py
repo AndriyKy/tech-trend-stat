@@ -42,7 +42,6 @@ class MongoClientSingleton(MongoClient):
         """
         if not cls._instance:
             cls._instance = super().__new__(cls)
-            cls._instance.__init__(**kwargs)
         return cls._instance
 
     @staticmethod
