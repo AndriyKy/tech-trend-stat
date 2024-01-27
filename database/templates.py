@@ -10,6 +10,12 @@ from database.client import MongoClientSingleton
 
 
 class Database:
+    """Database template for inheritance.
+
+    NOTE: Do not forget to close the client after calling
+    the `connect_collection` method.
+    """
+
     collection: str
     database: str
     indices: list[tuple[str, int]]

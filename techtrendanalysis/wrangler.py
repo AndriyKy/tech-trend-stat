@@ -16,12 +16,17 @@ STOPWORDS_DIR = join_path("techtrendanalysis", "stopwords")
 
 
 class Wrangler(DatabaseVacancies):
+    """Clean up the provided vacancy text and extract technology statistics."""
+
     def __init__(
         self,
         text: str | None,
         category: str,
         extra_filters: set[str] = set(),
     ) -> None:
+        """If the `text` is not passed, it will be retrieved from the
+        vacancies in MongoDB."""
+
         self._text = text
         self._category = category
         self._extra_filters = extra_filters
@@ -33,7 +38,7 @@ class Wrangler(DatabaseVacancies):
         ) as ukr_stopwords, open(
             join_path(STOPWORDS_DIR, "common-words.json")
         ) as common_words:
-            self.stopwords = set(
+            self._stopwords = set(
                 loads(ukr_stopwords.read()) + loads(common_words.read())
             )
 
@@ -77,7 +82,7 @@ class Wrangler(DatabaseVacancies):
         for token in doc:
             if (
                 token.pos_ == "PROPN"  # IT techs are mostly proper nouns.
-                and (token_text := token.text) not in self.stopwords
+                and (token_text := token.text) not in self._stopwords
                 and (
                     ord(token_text[0]) in eng_uppercase
                     or ord(token_text[0]) in eng_lowercase
@@ -115,8 +120,15 @@ class Wrangler(DatabaseVacancies):
 
         file = Path(f"{DatabaseStatistics.collection}.csv")
         file_exists = file.exists()
-        fieldnames = list(statistics.model_json_schema()["properties"].keys())
+        fieldnames = statistics.model_fields.keys()
         with open(file, "a") as fp:
             writer = csv.DictWriter(fp, fieldnames=fieldnames)
             writer.writeheader() if not file_exists else None
-            return writer.writerow(statistics.model_dump(mode="json"))
+            return writer.writerow(statistics.model_dump())
+
+
+if __name__ == "__main__":
+    CATEGORY = "Python"
+    wrangler = Wrangler(None, CATEGORY)
+    statistics = wrangler.calculate_frequency_distribution()
+    wrangler.save_statistics(statistics)

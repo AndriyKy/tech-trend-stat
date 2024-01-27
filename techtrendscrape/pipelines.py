@@ -35,6 +35,4 @@ class CSVPipeline(MongoPipeline):
         with open(f"{self.collection}.csv", "w") as fp:
             writer = csv.DictWriter(fp, fieldnames=fieldnames)
             writer.writeheader()
-            writer.writerows(
-                [item.model_dump(mode="json") for item in self.items]
-            )
+            writer.writerows([item.model_dump() for item in self.items])
